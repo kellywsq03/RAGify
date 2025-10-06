@@ -1,14 +1,21 @@
 import argparse
+import os
+import shutil
+import tempfile
+from typing import Optional
+
+from dotenv import load_dotenv
 from langchain_community.document_loaders import UnstructuredMarkdownLoader, PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
-from langchain.evaluation import load_evaluator
-import os
 from langchain_chroma import Chroma
-from dotenv import load_dotenv
-import os
-import shutil
 from langchain_huggingface import HuggingFaceEmbeddings
+
+try:
+    from supabase import create_client, Client
+except Exception:
+    create_client = None  # type: ignore
+    Client = None  # type: ignore
 
 DATA_PATH = "data/alice_short.md"
 
@@ -18,26 +25,62 @@ load_dotenv(os.path.join(BASE_DIR, "consts.env"))
 
 CHROMA_PATH = os.getenv("CHROMA_PATH", "chroma")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--pdf_path", type=str, default=None, help="Local path to a PDF to index")
+    parser.add_argument("--supabase_bucket", type=str, default=None, help="Supabase Storage bucket name")
+    parser.add_argument("--supabase_path", type=str, default=None, help="Supabase Storage object path (e.g., uploads/file.pdf)")
     args = parser.parse_args()
-    generate_data_store(pdf_path=args.pdf_path)
 
-def generate_data_store(pdf_path: str | None = None):
-    documents = load_documents(pdf_path=pdf_path)
+    generate_data_store(
+        pdf_path=args.pdf_path,
+        supabase_bucket=args.supabase_bucket,
+        supabase_path=args.supabase_path,
+    )
+
+def generate_data_store(pdf_path: Optional[str] = None, supabase_bucket: Optional[str] = None, supabase_path: Optional[str] = None):
+    documents = load_documents(pdf_path=pdf_path, supabase_bucket=supabase_bucket, supabase_path=supabase_path)
     chunks = split_text(documents)
     save_to_chroma(chunks)
 
-def load_documents(pdf_path: str | None = None):
+def load_documents(pdf_path: Optional[str] = None, supabase_bucket: Optional[str] = None, supabase_path: Optional[str] = None):
     if pdf_path:
         if not os.path.exists(pdf_path):
             raise FileNotFoundError(f"PDF file not found: {pdf_path}")
-        loader = PyPDFLoader(pdf_path)
-        return loader.load()
-    loader = UnstructuredMarkdownLoader(DATA_PATH)
-    return loader.load()
+        return PyPDFLoader(pdf_path).load()
+
+    if supabase_bucket and supabase_path:
+        if not SUPABASE_URL or not SUPABASE_KEY:
+            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY must be set in env.")
+        if create_client is None:
+            raise RuntimeError("supabase-py is not installed. Install with: pip install supabase")
+        local_pdf = download_pdf_from_supabase(supabase_bucket, supabase_path)
+        try:
+            return PyPDFLoader(local_pdf).load()
+        finally:
+            pass
+
+def download_pdf_from_supabase(bucket: str, path: str) -> str:
+    """Download a PDF from Supabase Storage to a temporary local file and return the file path."""
+    assert SUPABASE_URL and SUPABASE_KEY
+    client: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    resp = client.storage.from_(bucket).download(path)
+    if isinstance(resp, bytes):
+        data_bytes = resp
+    else:
+        # Some client versions may return dict-like with data attribute
+        data_bytes = getattr(resp, "data", None)
+        if data_bytes is None:
+            raise RuntimeError("Failed to download file from Supabase Storage")
+
+    fd, tmp_path = tempfile.mkstemp(prefix="supabase_pdf_", suffix=".pdf")
+    os.close(fd)
+    with open(tmp_path, "wb") as f:
+        f.write(data_bytes)
+    return tmp_path
 
 def split_text(documents: list[Document]):
     text_splitter = RecursiveCharacterTextSplitter(

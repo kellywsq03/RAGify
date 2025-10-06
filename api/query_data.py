@@ -26,13 +26,11 @@ CHROMA_PATH = os.getenv("CHROMA_PATH", "chroma")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 
-def main():
-    # Create CLI.
-    parser = argparse.ArgumentParser()
-    parser.add_argument("query_text", type=str, help="The query text.")
-    args = parser.parse_args()
-    query_text = args.query_text
+def run_query(query_text: str) -> dict:
+    """Run a RAG query against the local Chroma index and return a formatted string.
 
+    Returns a string like: "Response: ...\nSources: [...]" or a not-found message.
+    """
     model_name = "sentence-transformers/all-mpnet-base-v2"
     model_kwargs = {"device": "cpu"}
     encode_kwargs = {"normalize_embeddings": False}
@@ -42,26 +40,31 @@ def main():
         encode_kwargs=encode_kwargs,
     )
 
-    # Prepare the DB.
     db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
-
-    # Search the DB.
     results = db.similarity_search_with_relevance_scores(query_text, k=3)
     if len(results) == 0:
-        print(f"Unable to find matching results.")
-        return
+        return "Unable to find matching results."
 
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
+    context_pages = [doc.metadata.get("page", 0) for doc, _score in results]
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query_text)
-    print(prompt)
 
     model = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
     response_text = model.invoke(prompt)
 
-    sources = [doc.metadata.get("source", None) for doc, _score in results]
-    formatted_response = f"Response: {response_text}\nSources: {sources}"
-    print(formatted_response)
+    # sources = [doc.metadata.get("source", None) for doc, _score in results]
+    return {"response": response_text.content,
+        "page_content": [doc.page_content for doc, _score in results],
+        "pages": context_pages
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("query_text", type=str, help="The query text.")
+    args = parser.parse_args()
+    print(run_query(args.query_text))
 
 
 if __name__ == "__main__":
