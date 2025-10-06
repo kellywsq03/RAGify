@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 
 export default function Home() {
   const [file, setFile] = useState<File | null>(null);
@@ -8,6 +8,9 @@ export default function Home() {
   const [uploaded, setUploaded] = useState<{ bucket: string; path: string } | null>(null);
   const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
+  const [sources, setSources] = useState<[]>([]);
+  const [pageNums, setPageNums] = useState<[]>([]);
+  const [showSources, setShowSources] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,16 +88,53 @@ export default function Home() {
                   });
                   const data = await res.json();
                   setAnswer(data.output || "");
+                  setSources(data.page_content);
+                  setPageNums(data.pages);
                 }}
               >
                 Ask
               </button>
             </div>
             {answer && (
-              <pre className="whitespace-pre-wrap rounded-md bg-gray-50 p-3 text-sm dark:bg-gray-900 dark:text-gray-100">{answer}</pre>
+                <div className="mt-4 space-y-4">
+                  <div>
+                    <h3 className="text-md font-medium mb-2">Answer</h3>
+                    <p className="whitespace-pre-wrap rounded-md bg-gray-50 p-3 text-sm dark:bg-gray-900 dark:text-gray-100">
+                      {answer}
+                    </p>
+                  </div>
+                  {sources.length > 0 && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => setShowSources(!showSources)}
+                        className="flex items-center gap-2 text-md font-medium mb-2 text-md"
+                      >
+                        Sources
+                        <span className="text-sm">{showSources ? "▲" : "▼"}</span>
+                      </button>
+
+                      {showSources && (
+                        <ul className="space-y-3 transition-all duration-300">
+                          {sources.map((src, i) => (
+                            <li
+                              key={i}
+                              className="rounded-md bg-gray-50 p-3 text-sm dark:bg-gray-900"
+                            >
+                              <p className="dark:text-gray-100 text-sm mb-1">
+                                Page {pageNums[i] ?? "?"}
+                              </p>
+                              <p>{src}</p>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             )}
-          </div>
-        )}
       </form>
     </main>
   );
