@@ -1,6 +1,5 @@
 import argparse
-# from dataclasses import dataclass
-from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.prompts import ChatPromptTemplate
@@ -44,12 +43,11 @@ def main():
     )
 
     # Prepare the DB.
-    # embedding_function = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
     db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
 
     # Search the DB.
     results = db.similarity_search_with_relevance_scores(query_text, k=3)
-    if len(results) == 0 or results[0][1] < 0.7:
+    if len(results) == 0:
         print(f"Unable to find matching results.")
         return
 
@@ -59,7 +57,7 @@ def main():
     print(prompt)
 
     model = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
-    response_text = model.predict(prompt)
+    response_text = model.invoke(prompt)
 
     sources = [doc.metadata.get("source", None) for doc, _score in results]
     formatted_response = f"Response: {response_text}\nSources: {sources}"
