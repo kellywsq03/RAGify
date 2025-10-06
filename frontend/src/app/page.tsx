@@ -57,7 +57,7 @@ export default function Home() {
         />
         <button
           type="submit"
-          className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-black"
+          className="rounded-md bg-black px-4 py-2 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
           disabled={!file}
         >
           Upload
@@ -65,7 +65,7 @@ export default function Home() {
         {status && <p className="text-sm text-gray-600 dark:text-gray-300">{status}</p>}
         {uploaded && (
           <div className="mt-6 space-y-3">
-            <h2 className="text-lg font-medium">Ask a question</h2>
+            <h2 className="text-lg font-semibold ">Ask a question</h2>
             <div className="flex gap-2">
               <input
                 type="text"
@@ -108,7 +108,7 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={() => setShowSources(!showSources)}
-                        className="flex items-center gap-2 text-md font-medium mb-2 text-md"
+                        className="flex items-center gap-2 text-md font-semibold mb-2 text-md"
                       >
                         Sources
                         <span className="text-sm">{showSources ? "▲" : "▼"}</span>

@@ -17,5 +17,3 @@ export class RagController {
     return this.ragService.query(question);
   }
 }
-
-
