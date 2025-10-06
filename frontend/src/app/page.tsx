@@ -1,8 +1,16 @@
 "use client";
 
-import { use, useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import { UserIdContext } from '../components/UserProvider';
+import Link from 'next/link';
 
 export default function Home() {
+  type FileInfo = {
+    name: string;
+    path: string;
+    signedUrl?: string;
+  };
+  
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
   const [uploaded, setUploaded] = useState<{ bucket: string; path: string } | null>(null);
@@ -11,6 +19,12 @@ export default function Home() {
   const [sources, setSources] = useState<[]>([]);
   const [pageNums, setPageNums] = useState<[]>([]);
   const [showSources, setShowSources] = useState(false);
+  const [files, setFiles] = useState<FileInfo[]>([]);
+  const [selected, setSelected] = useState<string | null>(null);
+
+  const context = useContext(UserIdContext);
+  if (!context) throw new Error('UserIdContext not found');
+  const { userId, setUserId } = context;
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,6 +36,9 @@ export default function Home() {
       setStatus("Uploading...");
       const form = new FormData();
       form.append("file", file);
+      if (userId) {
+        form.append("userId", userId);
+      }
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
       const res = await fetch(`${baseUrl}/upload/pdf`, {
         method: "POST",
@@ -34,6 +51,7 @@ export default function Home() {
       const data = await res.json();
       setUploaded({ bucket: data.bucket, path: data.path });
       setStatus(`Uploaded: ${data.path || "success"}`);
+      setSelected(data.filename)
       await fetch(`${baseUrl}/rag/index`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -44,6 +62,31 @@ export default function Home() {
       setStatus(message);
     }
   };
+
+  // const onSelect;
+
+  useEffect(() => {
+    const fetchFiles = async () => {
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+        const res = await fetch(`${baseUrl}/upload/getFiles`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId }),
+          }
+        );
+        const data = await res.json();
+        console.log(data)
+        console.log(typeof(data))
+        setFiles(data ?? []);
+        console.log(files[0]);
+      } catch (err) {
+        console.error("Error fetching files:", err);
+      }
+    }
+    fetchFiles();
+  }, [uploaded, userId]);
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
@@ -63,6 +106,39 @@ export default function Home() {
           Upload
         </button>
         {status && <p className="text-sm text-gray-600 dark:text-gray-300">{status}</p>}
+        <div>
+          <h1 className="text-xl font-semibold mb-4">Your Uploaded Files</h1>
+          {!userId && <div className="mb-4">
+            <Link
+              href="/login"
+              className="text-blue-600 hover:underline"
+            >
+              Log in to view
+            </Link>
+          </div>}
+          {userId && <div className="flex flex-col gap-2">
+            {files.length === 0 && (
+              <p className="text-gray-500">No files uploaded yet.</p>
+            )}
+            {files.length > 0 &&
+            files
+            .filter((file) => file.name !== ".emptyFolderPlaceholder")
+            .map((file) => (
+              <div
+                key={file.name}
+                onClick={() => setSelected(file.name)}
+                className={`cursor-pointer p-3 rounded-md border transition ${
+                  selected === file.name
+                    ? "bg-blue-100 border-blue-400"
+                    : "bg-white border-gray-300 hover:bg-gray-100"
+                }`}
+              >
+                <p className="font-medium text-black text-sm">{file.name}</p>
+              </div>
+            ))}
+            </div>}
+          </div>
+            
         {uploaded && (
           <div className="mt-6 space-y-3">
             <h2 className="text-lg font-semibold ">Ask a question</h2>

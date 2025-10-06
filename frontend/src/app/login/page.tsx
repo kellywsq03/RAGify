@@ -1,10 +1,16 @@
 'use client'
-import { useState } from 'react'
+import { useState, useContext } from 'react'
+import { UserIdContext } from '../../components/UserProvider';
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
+  const context = useContext(UserIdContext);
+  const router = useRouter();
+  if (!context) throw new Error('UserIdContext not found');
+  const { userId, setUserId } = context;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,7 +27,9 @@ export default function LoginPage() {
         setMessage(`Error: ${data.message || 'Login failed'}`)
         return
       }
+      setUserId(data.user.id)
       setMessage('Logged in successfully!')
+      router.push("/")
     } catch (err: unknown){
       const message = err instanceof Error ? err.message : 'Login failed'
       setMessage(`Error: ${message}`)

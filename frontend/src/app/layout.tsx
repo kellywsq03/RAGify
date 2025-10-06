@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { useState } from "react";
+import { UserProvider } from '../components/UserProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,13 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+      <html lang="en">
       <body className="bg-white dark:bg-gray-900 text-black dark:text-white">
         <header className="p-4 border-b border-gray-200 dark:border-gray-700">
           <h1 className="text-lg font-bold">RAGify</h1>
         </header>
-        <main>{children}</main>
+        <UserProvider>
+          <main>{children}</main>
+        </UserProvider> 
       </body>
-    </html>
+      </html>
   );
 }

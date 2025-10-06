@@ -13,6 +13,7 @@ export class RagService {
       });
       if (!res.ok) {
         const text = await res.text();
+        console.error('Python API error:', text);
         throw new Error(text || 'Index request failed');
       }
       const data: unknown = await res.json();

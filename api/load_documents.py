@@ -20,13 +20,13 @@ except Exception:
 DATA_PATH = "data/alice_short.md"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv()
-load_dotenv(os.path.join(BASE_DIR, "consts.env"))
+ENV_PATH = os.path.join(BASE_DIR, "consts.env")
+load_dotenv(ENV_PATH)
 
 CHROMA_PATH = os.getenv("CHROMA_PATH", "chroma")
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_ANON_KEY")
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -54,10 +54,13 @@ def load_documents(pdf_path: Optional[str] = None, supabase_bucket: Optional[str
 
     if supabase_bucket and supabase_path:
         if not SUPABASE_URL or not SUPABASE_KEY:
-            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY must be set in env.")
+            raise RuntimeError("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set in env.")
         if create_client is None:
             raise RuntimeError("supabase-py is not installed. Install with: pip install supabase")
         local_pdf = download_pdf_from_supabase(supabase_bucket, supabase_path)
+        with open(local_pdf, "rb") as f:
+            head = f.read(200)
+            print("📄 File header preview:", head[:20])
         try:
             return PyPDFLoader(local_pdf).load()
         finally:
