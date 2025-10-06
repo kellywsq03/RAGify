@@ -42,7 +42,6 @@ export default function Home() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Upload failed";
       setStatus(message);
-      //test
     }
   };
 
