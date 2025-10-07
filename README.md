@@ -1,6 +1,6 @@
 # RAGify
 
-A simple RAG app where you can upload pdfs and ask questions about the pdf to receive an answer and sources.
+A simple RAG app where you can upload pdfs 📂, ask questions about the pdf 📣 and receive answers + sources 📕!
 
 ![](RAGify_screenshot.png)
 
