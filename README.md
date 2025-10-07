@@ -1,3 +1,5 @@
+# RAGify
+
 ![](RAGify_screenshot.png)
 
 # Demo
