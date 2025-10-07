@@ -43,7 +43,10 @@ def run_query(query_text: str) -> dict:
     db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings)
     results = db.similarity_search_with_relevance_scores(query_text, k=3)
     if len(results) == 0:
-        return "Unable to find matching results."
+        return {"response": "Unable to find matching results.",
+            "page_content": [],
+            "pages": []
+        }
 
     context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
     context_pages = [doc.metadata.get("page", 0) for doc, _score in results]

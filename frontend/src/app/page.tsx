@@ -21,6 +21,7 @@ export default function Home() {
   const [showSources, setShowSources] = useState(false);
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
+  const [isIndexing, setIsIndexing] = useState(false);
 
   const context = useContext(UserIdContext);
   if (!context) throw new Error('UserIdContext not found');
@@ -51,21 +52,25 @@ export default function Home() {
       const data = await res.json();
       setUploaded({ bucket: data.bucket, path: data.path });
       setStatus(`Uploaded: ${data.path || "success"}`);
-      setSelected(data.filename)
+      setSelected(data.filename);
+      setIsIndexing(true);
       await fetch(`${baseUrl}/rag/index`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bucket: data.bucket, path: data.path }),
       });
+      setIsIndexing(false);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Upload failed";
       setStatus(message);
+      setIsIndexing(false);
     }
   };
 
   const onSelect = async (file: FileInfo) => {
     try {
       setSelected(file.name);
+      setIsIndexing(true);
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
       const res = await fetch(`${baseUrl}/rag/index`, {
         method: "POST",
@@ -77,9 +82,11 @@ export default function Home() {
       }
       const data = await res.json();
       console.log("RAG indexing successful:", data);
-      alert(`Indexed file: ${file.name}`);
+      setIsIndexing(false);
+      setUploaded({bucket: "pdfs", path: file.path})
     } catch (err) {
       console.error("Error indexing file:", err);
+      setIsIndexing(false);
       alert("Failed to index file");
     }
   }
@@ -148,17 +155,24 @@ export default function Home() {
                 onClick={() => onSelect(file)}
                 className={`cursor-pointer p-3 rounded-md border transition ${
                   selected === file.name
-                    ? "bg-blue-100 border-blue-400"
+                    ? isIndexing ? "bg-gray-400 border-gray-400"
+                      : "bg-blue-100 border-blue-400"
                     : "bg-white border-gray-300 hover:bg-gray-100"
                 }`}
               >
                 <p className="font-medium text-black text-sm">{file.name}</p>
               </div>
             ))}
+            {isIndexing && (
+              <div className="flex items-center space-x-2 mt-3">
+                <div className="animate-spin rounded-full h-5 w-5 border-4 border-blue-500 border-b-transparent" />
+                <span>Indexing in progress...</span>
+              </div>
+            )}
             </div>}
           </div>
             
-        {uploaded && (
+        {!isIndexing && uploaded && (
           <div className="mt-6 space-y-3">
             <h2 className="text-lg font-semibold ">Ask a question</h2>
             <div className="flex gap-2">
