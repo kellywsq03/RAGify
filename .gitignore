@@ -2,3 +2,4 @@ chroma/
 consts.env
 frontend/.env.local
 backend/keys.env
+Videos/
