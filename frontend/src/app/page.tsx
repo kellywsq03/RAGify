@@ -63,7 +63,26 @@ export default function Home() {
     }
   };
 
-  // const onSelect;
+  const onSelect = async (file: FileInfo) => {
+    try {
+      setSelected(file.name);
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+      const res = await fetch(`${baseUrl}/rag/index`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bucket: 'pdfs', path: file.path}),
+      });
+      if (!res.ok) {
+        throw new Error(`Backend error: ${res.statusText}`);
+      }
+      const data = await res.json();
+      console.log("RAG indexing successful:", data);
+      alert(`Indexed file: ${file.name}`);
+    } catch (err) {
+      console.error("Error indexing file:", err);
+      alert("Failed to index file");
+    }
+  }
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -126,7 +145,7 @@ export default function Home() {
             .map((file) => (
               <div
                 key={file.name}
-                onClick={() => setSelected(file.name)}
+                onClick={() => onSelect(file)}
                 className={`cursor-pointer p-3 rounded-md border transition ${
                   selected === file.name
                     ? "bg-blue-100 border-blue-400"

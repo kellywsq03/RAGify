@@ -104,8 +104,11 @@ def split_text(documents: list[Document]):
 
 def save_to_chroma(chunks: list[Document]):
     # Clear out the database first.
-    if os.path.exists(CHROMA_PATH):
-        shutil.rmtree(CHROMA_PATH)
+    # if os.path.exists(CHROMA_PATH):
+    #     try:
+    #         shutil.rmtree(CHROMA_PATH)
+    #     except Exception as e:
+    #         print(f"Warning: could not delete {CHROMA_PATH}: {e}")
 
     # Create a new DB from the documents.
     model_name = "sentence-transformers/all-mpnet-base-v2"
@@ -117,6 +120,14 @@ def save_to_chroma(chunks: list[Document]):
         encode_kwargs=encode_kwargs,
     )
     db = Chroma.from_documents(chunks, embeddings, persist_directory=CHROMA_PATH)
+    # Delete the old collection (if any)
+    try:
+        db.delete_collection()
+    except Exception:
+        pass  # ignore if no collection yet
+    # Recreate the collection cleanly
+    db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embeddings, collection_name="default")
+    db.add_documents(chunks)
     print(f"Saved {len(chunks)} chunks to {CHROMA_PATH}.")
 
 if __name__ == "__main__":
