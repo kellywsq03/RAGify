@@ -1,3 +1,6 @@
+# Demo
+Watch a demo of this project [here](https://youtu.be/hpRBZ6XxBQk).
+
 # Installation
 
 Follow these steps to set up and run the project:
@@ -51,3 +54,5 @@ Follow these steps to set up and run the project:
     ```bash
     uvicorn server:app --host 0.0.0.0 --port 8000
     ```
+
+7. Sample data for testing can be found in ```api/data```.

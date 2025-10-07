@@ -22,6 +22,7 @@ export default function Home() {
   const [files, setFiles] = useState<FileInfo[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
   const [isIndexing, setIsIndexing] = useState(false);
+  const [isAsking, setIsAsking] = useState(false);
 
   const context = useContext(UserIdContext);
   if (!context) throw new Error('UserIdContext not found');
@@ -194,9 +195,10 @@ export default function Home() {
               <button
                 type="button"
                 className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50 dark:bg-white dark:text-black"
-                disabled={!question}
+                disabled={!question || isAsking}
                 onClick={async () => {
                   setAnswer("");
+                  setIsAsking(true);
                   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
                   const res = await fetch(`${baseUrl}/rag/query`, {
                     method: "POST",
@@ -207,11 +209,18 @@ export default function Home() {
                   setAnswer(data.output || "");
                   setSources(data.page_content);
                   setPageNums(data.pages);
+                  setIsAsking(false);
                 }}
               >
                 Ask
               </button>
             </div>
+            {isAsking && (
+                <div className="flex items-center space-x-2 mt-3">
+                  <div className="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-b-transparent" />
+                  <span>Loading answer...</span>
+                </div>
+              )}
             {answer && (
                 <div className="mt-4 space-y-4">
                   <div>
