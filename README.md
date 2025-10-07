@@ -1,3 +1,5 @@
+![](RAGify_screenshot.png)
+
 # Demo
 Watch a demo of this project [here](https://youtu.be/hpRBZ6XxBQk).
 
