@@ -142,34 +142,42 @@ export default function Home() {
               Log in to view
             </Link>
           </div>}
-          {userId && <div className="flex flex-col gap-2">
-            {files.length === 0 && (
-              <p className="text-gray-500">No files uploaded yet.</p>
-            )}
-            {files.length > 0 &&
-            files
-            .filter((file) => file.name !== ".emptyFolderPlaceholder")
-            .map((file) => (
-              <div
-                key={file.name}
-                onClick={() => onSelect(file)}
-                className={`cursor-pointer p-3 rounded-md border transition ${
-                  selected === file.name
-                    ? isIndexing ? "bg-gray-400 border-gray-400"
-                      : "bg-blue-100 border-blue-400"
-                    : "bg-white border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                <p className="font-medium text-black text-sm">{file.name}</p>
-              </div>
-            ))}
-            {isIndexing && (
-              <div className="flex items-center space-x-2 mt-3">
-                <div className="animate-spin rounded-full h-5 w-5 border-4 border-blue-500 border-b-transparent" />
-                <span>Indexing in progress...</span>
-              </div>
-            )}
-            </div>}
+          {userId && (
+            <div className="flex flex-col gap-2">
+              {files.length === 0 && (
+                <p className="text-gray-500">No files uploaded yet.</p>
+              )}
+
+              {files.length > 0 && (
+                <div className="max-h-52 overflow-auto flex flex-col gap-2">
+                  {files
+                    .filter((file) => file.name !== ".emptyFolderPlaceholder")
+                    .map((file) => (
+                      <div
+                        key={file.name}
+                        onClick={() => onSelect(file)}
+                        className={`cursor-pointer p-3 rounded-md border transition ${
+                          selected === file.name
+                            ? isIndexing
+                              ? "bg-gray-400 border-gray-400"
+                              : "bg-blue-100 border-blue-400"
+                            : "bg-white border-gray-300 hover:bg-gray-100"
+                        }`}
+                      >
+                        <p className="font-medium text-black text-sm">{file.name}</p>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </div>
+          )}
+          {isIndexing && (
+            <div className="flex items-center space-x-2 mt-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-4 border-blue-500 border-b-transparent" />
+              <span>Indexing in progress...</span>
+            </div>
+          )}
+
           </div>
             
         {!isIndexing && uploaded && (

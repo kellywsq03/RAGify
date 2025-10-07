@@ -1,0 +1,171 @@
+aiofiles==24.1.0
+aiohappyeyeballs==2.6.1
+aiohttp==3.12.15
+aiosignal==1.4.0
+annotated-types @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/annotated-types_1728588668736/work
+anyio @ file:///opt/miniconda3/conda-bld/anyio_1758623422202/work
+attrs==25.3.0
+backoff==2.2.1
+bcrypt==5.0.0
+beautifulsoup4==4.14.2
+brotlicffi @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_b5py2dr5ag/croot/brotlicffi_1736182482518/work
+build==1.3.0
+cachetools==6.2.0
+certifi @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_barck9k8fe/croot/certifi_1754570651396/work/certifi
+cffi==2.0.0
+charset-normalizer @ file:///croot/charset-normalizer_1721748349566/work
+chromadb==1.1.1
+click==8.3.0
+coloredlogs==15.0.1
+cryptography==46.0.2
+dataclasses-json==0.6.7
+deprecation==2.1.0
+distro==1.9.0
+durationpy==0.10
+emoji==2.15.0
+fastapi==0.118.0
+filelock==3.19.1
+filetype==1.2.0
+flatbuffers==25.9.23
+frozenlist==1.8.0
+fsspec==2025.9.0
+google-ai-generativelanguage==0.7.0
+google-api-core==2.25.2
+google-auth==2.41.1
+googleapis-common-protos==1.70.0
+greenlet @ file:///opt/miniconda3/conda-bld/greenlet_1757405399086/work
+grpcio==1.75.1
+grpcio-status==1.75.1
+h11 @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_557zp2ij9k/croot/h11_1748442489221/work
+h2==4.3.0
+hf-xet==1.1.10
+hpack==4.1.0
+html5lib==1.1
+httpcore @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_941yf7p5zt/croot/httpcore_1748526061031/work
+httptools==0.6.4
+httpx @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_28ztzk1ij8/croot/httpx_1746747850138/work
+httpx-sse==0.4.1
+huggingface-hub==0.35.3
+humanfriendly==10.0
+hyperframe==6.1.0
+idna @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/idna_1728585920859/work
+importlib_metadata==8.7.0
+importlib_resources==6.5.2
+Jinja2==3.1.6
+joblib==1.5.2
+jsonpatch @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/jsonpatch_1728594556110/work
+jsonpointer @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_bdid71leqg/croot/jsonpointer_1753788445166/work
+jsonschema==4.25.1
+jsonschema-specifications==2025.9.1
+kubernetes==34.1.0
+langchain @ file:///opt/miniconda3/conda-bld/langchain_1759750093911/work
+langchain-chroma==0.2.6
+langchain-community==0.3.30
+langchain-core @ file:///opt/miniconda3/conda-bld/langchain-core_1759500551819/work
+langchain-google-genai==2.1.12
+langchain-huggingface==0.3.1
+langchain-text-splitters @ file:///opt/miniconda3/conda-bld/langchain-text-splitters_1759747131873/work
+langdetect==1.0.9
+langsmith @ file:///opt/miniconda3/conda-bld/langsmith_1759484060546/work
+lxml==6.0.2
+Markdown==3.9
+markdown-it-py==4.0.0
+MarkupSafe==3.0.3
+marshmallow==3.26.1
+mdurl==0.1.2
+mmh3==5.2.0
+mpmath==1.3.0
+multidict==6.6.4
+mypy_extensions==1.1.0
+networkx==3.5
+nltk==3.9.2
+numpy==2.3.3
+oauthlib==3.3.1
+olefile==0.47
+onnxruntime==1.23.0
+opentelemetry-api==1.37.0
+opentelemetry-exporter-otlp-proto-common==1.37.0
+opentelemetry-exporter-otlp-proto-grpc==1.37.0
+opentelemetry-proto==1.37.0
+opentelemetry-sdk==1.37.0
+opentelemetry-semantic-conventions==0.58b0
+orjson @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_8f6hki8ldu/croot/orjson_1737039630134/work
+overrides==7.7.0
+packaging @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_b31rpdx1of/croot/packaging_1753775365574/work
+pillow==11.3.0
+postgrest==2.21.1
+posthog==5.4.0
+propcache==0.4.0
+proto-plus==1.26.1
+protobuf==6.32.1
+psutil==7.1.0
+pyasn1==0.6.1
+pyasn1_modules==0.4.2
+pybase64==1.4.2
+pycparser @ file:///opt/miniconda3/conda-bld/pycparser_1757496048647/work
+pydantic @ file:///opt/miniconda3/conda-bld/pydantic_1758736874566/work
+pydantic-settings==2.11.0
+pydantic_core @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_9d3ads2bae/croot/pydantic-core_1750754745671/work
+Pygments==2.19.2
+PyJWT==2.10.1
+pypdf==6.1.1
+PyPika==0.48.9
+pyproject_hooks==1.2.0
+PySocks @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/pysocks_1728586068722/work
+python-dateutil==2.9.0.post0
+python-dotenv==1.1.1
+python-iso639==2025.2.18
+python-magic==0.4.27
+python-oxmsg==0.0.2
+PyYAML @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_e8m1aayrqt/croot/pyyaml_1731006115055/work
+RapidFuzz==3.14.1
+realtime==2.21.1
+referencing==0.36.2
+regex==2025.9.18
+requests @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_ef59rwwti1/croot/requests_1756709671417/work
+requests-oauthlib==2.0.0
+requests-toolbelt @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/requests-toolbelt_1731721330284/work
+rich==14.1.0
+rpds-py==0.27.1
+rsa==4.9.1
+safetensors==0.6.2
+scikit-learn==1.7.2
+scipy==1.16.2
+sentence-transformers==5.1.1
+setuptools==78.1.1
+shellingham==1.5.4
+six==1.17.0
+sniffio @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/sniffio_1728586434087/work
+soupsieve==2.8
+SQLAlchemy @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_64hfvudz6k/croot/sqlalchemy_1756710322669/work
+starlette==0.48.0
+storage3==2.21.1
+StrEnum==0.4.15
+supabase==2.21.1
+supabase-auth==2.21.1
+supabase-functions==2.21.1
+sympy==1.14.0
+tenacity @ file:///Users/builder/cbouss/perseverance-python-buildout/croot/tenacity_1731707382227/work
+threadpoolctl==3.6.0
+tokenizers==0.22.1
+torch==2.8.0
+tqdm==4.67.1
+transformers==4.57.0
+typer==0.19.2
+typing-inspect==0.9.0
+typing-inspection @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_cdhsd2fkb6/croot/typing-inspection_1746023485130/work
+typing_extensions @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_dffmcwqo6o/croot/typing_extensions_1756281471323/work
+unstructured==0.18.15
+unstructured-client==0.42.3
+urllib3==2.3.0
+uvicorn==0.37.0
+uvloop==0.21.0
+watchfiles==1.1.0
+webencodings==0.5.1
+websocket-client==1.8.0
+websockets==15.0.1
+wheel==0.45.1
+wrapt==1.17.3
+yarl==1.21.0
+zipp==3.23.0
+zstandard @ file:///opt/miniconda3/conda-bld/zstandard_1758189078532/work
